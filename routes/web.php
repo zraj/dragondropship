@@ -10,31 +10,45 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::auth();
+Route::group(['middleware'=>['admin']],function(){
 
-Route::get('/', function () {
-    return view('dashboard');
-})->middleware('auth')->name('home');
+  Route::get('/createuser','UserController@create')->middleware('admin');
+  Route::post('/registration','UserController@registration')->middleware('admin');
+  Route::get('/viewprofile/{user}','UserController@viewprofile')->middleware('admin');
 
-Route::get('/dash', function () {
-    return view('dashboard');
-})->middleware('auth');
-
-
-Route::get('/master', function () {
-    return view('home');
-})->middleware('auth');
-Route::get('/home', function () {
-    return view('dashboard');
 });
+
+Route::group(['middleware'=>['auth']],function(){
+  Route::get('/', function () {
+      return view('dashboard');
+  })->middleware('auth')->name('home');
+
+  Route::get('/dash', function () {
+      return view('dashboard');
+  })->middleware('auth');
+
+
+  Route::get('/master', function () {
+      return view('home');
+  })->middleware('auth');
+  Route::get('/home', function () {
+      return view('dashboard');
+  });
+  Route::get('/logout','UserController@destroy');
+  Route::get('/profile','UserController@profile');
+  Route::get('/listuser','UserController@listuser');
+  
+});
+
+
 
 Route::get('/login','UserController@index')->middleware('guest')->name('login');
 Route::post('/login','UserController@login')->middleware('guest');
-Route::get('/logout','UserController@destroy');
-Route::get('/profile','UserController@profile');
-Route::get('/listuser','UserController@listuser');
-Route::get('/createuser','UserController@create')->middleware('admin');
-Route::post('/registration','UserController@registration')->middleware('admin');
-Route::get('/viewprofile/{user}','UserController@viewprofile')->middleware('admin');
+
+// Route::get('/createuser','UserController@create')->middleware('admin');
+// Route::post('/registration','UserController@registration')->middleware('admin');
+// Route::get('/viewprofile/{user}','UserController@viewprofile')->middleware('admin');
 
 
 Route::get('/category','CategoryController@index');
